@@ -4,4 +4,3 @@ funcion log(){
 }
 
 log('lichuanwei','tianmeirong');
-
