@@ -1,4 +1,4 @@
-function log(){
+funcion log(){
     var args = [].slice.call(arguments);
-    console.log('Testing JS');
+    console.log.apply(console,args);
 }
