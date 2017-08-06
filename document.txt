@@ -89,6 +89,7 @@ GET /api/vi/departments/:departmentId   获取一个部门信息
 2，可以通过apidoc（http://apidocjs.com/example/） 工具生成友好的后台API 的文档，给前端开发者或者后续开发者提供API的详细信息。
 3，API的返回，最好是统一的json 数据。
 
+也可以参考一下Google drive(https://developers.google.com/drive/v2/reference/)和Github(https://developer.github.com)的API的设计。
 
 
 
