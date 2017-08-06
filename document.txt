@@ -1,0 +1,98 @@
+Restful API  设计的总结：
+
+一，通常做一个 Restful API 需要考虑到的一些地方
+1，协议： http/https。
+         目前由于是内部项目我们用的是http，也可以对一些安全性要求较高的API,采用https协议。
+2，域名：
+         可以用一台专门提供API的服务器(http://api.example.com). 也可以直接部署在项目域名之下(http://example.com/api/)。
+3，版本：
+         随着项目的演进，某些API可能需要返回额外的资源或者 API 的功能发生了很大的变化，这就需要我们控制API 的版本。一般把版本信息放在URL里，这样直观一点。例如：http://example.com/api/v1
+4，路径：
+         在Restful架构中，可以理解每个API 代表一种资源地址，所以API中不能有动词，只能是名词，而且最好能够与数据库中的表名相同，名词也应该用复数。例如 http://example.com/api/v1/departments 这代表了departments 这个资源的地址。
+5， HTTP 动词：通常用的最多的就是POST, DELETE, PUT, GET.
+
+POST: 用于在服务器端创建资源，通常我们会返回创建成功之后资源的ID, 其他的数据的话可以根据业务的需求来返回。
+DELETE: 用于在服务器端删除资源
+PUT: 用于在服务器端更新资源
+GET: 用于获取服务端资源
+例如：
+
+POST /api/v1/departments.   创建一个部门
+DELETE /api/v1/departments/:departmentId 删除一个部门
+PUT /api/vi/departments/:departmentId  更新一个部门信息
+GET /api/vi/departments/:departmentId   获取一个部门信息
+        /api/vi/departments 获取所有部门信息
+
+
+POST /api/vi/departments/:departmentId/documents. 在某一个指定的部门下创建一个文档
+DELETE /api/vi/departments/:departmentId/documents/:documentId. 删除一个指定部门下的一个文档
+PUT /api/vi/departments/:departmentId/documents/:documentId. 更新某一个指定部门下的一个文档
+GET /api/vi/departments/:departmentId/documents/:documentId. 获取某个部门下的一个文档
+       ／api/vi/departments/:departmentId/documents 后去某个部门下的所有文档
+
+6，过滤信息。
+如果 ／api/vi/departments/:departmentId/documents 这个API, 资源数据量很大，服务器不可能全部返回，这就需要我们加一些过滤条件
+／api/vi/departments/:departmentId/documents?sortby=createTime&order=desc&&offset=0&&limit=10.  获取某个部门的最新创建的十篇文档
+
+7，状态码：用的最多的是200，201，204, 4XX，500
+200: 用于表示服务器成功返回了客户端请求的数据。[GET]
+201: 常用与表示用户创建或者更新数据成功。[POST/PUT]
+204: 用户删除数据成功。[DELETE]
+4XX: 用于表示客户端的一些错误。
+500: 服务器发生错误，用户将无法判断发出的请求是否成功。
+
+二, 建议：
+1，为了简化设计，我们可以把所有成功的请求的状态码都设置成200，所有失败的请求的状态码设置成500，这样我们就可以统一API 的返回了。
+例如： 
+POST /api/v1/departments.   创建一个部门
+
+请求参数：
+{
+    name:”测试部门”,
+    description:”这是一个测试部门”,
+    leader:”张三”
+}
+
+//创建成功之后的返回
+{
+    “statuCode”:200,
+    “data”:{
+          “departmentId”:123
+     }
+}
+
+//请求失败的输出； {
+    “statuCode”:500,
+    “message”:”部门已经存在”
+}
+
+GET /api/vi/departments/:departmentId   获取一个部门信息
+
+请求: /api/vi/departments/123
+
+//请求成功之后的返回
+{
+    “statuCode”:200,
+    “data”:{
+         “name”:”测试部门”,
+         “description”:”这是一个测试部门”,
+         “leader”:”张三”
+     }
+}
+
+//请求失败之后的返回
+{
+    “statuCode”:500,
+    “message”:”查询的部门不存在”
+}
+
+2，可以通过apidoc（http://apidocjs.com/example/） 工具生成友好的后台API 的文档，给前端开发者或者后续开发者提供API的详细信息。
+3，API的返回，最好是统一的json 数据。
+
+
+
+
+
+
+
+
